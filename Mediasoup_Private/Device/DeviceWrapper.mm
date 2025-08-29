@@ -311,6 +311,8 @@
 			if (iceServerDescription.contains("credential")) {
 				iceServer.password = iceServerDescription["credential"].get<std::string>();
 			}
+   			//DK TLS Insecure
+            iceServer.tls_cert_policy = webrtc::PeerConnectionInterface::TlsCertPolicy::kTlsCertPolicyInsecureNoCheck;
 			pcOptions.config.servers.push_back(iceServer);
 		}
 	}
