@@ -19,11 +19,11 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "Mediasoup",
-            path: "./build/Mediasoup.xcframework"
+            url: "https://github.com/dkunhart/mediasoup-client-swift-tls/tree/master/bin/Mediasoup.xcframework"
         ),
         .binaryTarget(
             name: "WebRTC",
-            path: "./build/WebRTC.xcframework"
+            url: "https://github.com/dkunhart/mediasoup-client-swift-tls/tree/master/bin/WebRTC.xcframework"
         )
     ]
 )
