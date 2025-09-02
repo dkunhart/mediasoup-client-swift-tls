@@ -292,29 +292,52 @@
 		pcOptions.config.servers.clear();
 
 		// RTCIceServer format is described here: https://developer.mozilla.org/en-US/docs/Web/API/RTCIceServer.
-		for (const auto& iceServerDescription : iceServersJSON) {
-			webrtc::PeerConnectionInterface::IceServer iceServer;
-			if (!iceServerDescription.contains("urls")) {
-				continue;
-			}
-			if (iceServerDescription["urls"].is_string()) {
-				iceServer.urls = { iceServerDescription["urls"].get<std::string>() };
-			} else if (iceServerDescription["urls"].is_array()) {
-				iceServer.urls = iceServerDescription["urls"].get<std::vector<std::string>>();
-			} else {
-				continue;
-			}
-
-			if (iceServerDescription.contains("username")) {
-				iceServer.username = iceServerDescription["username"].get<std::string>();
-			}
-			if (iceServerDescription.contains("credential")) {
-				iceServer.password = iceServerDescription["credential"].get<std::string>();
-			}
-   			//DK TLS Insecure
-            iceServer.tls_cert_policy = webrtc::PeerConnectionInterface::TlsCertPolicy::kTlsCertPolicyInsecureNoCheck;
-			pcOptions.config.servers.push_back(iceServer);
-		}
+        for (const auto& iceServerDescription : iceServersJSON) {
+            webrtc::PeerConnectionInterface::IceServer iceServer;
+            if (!iceServerDescription.contains("urls")) {
+                continue;
+            }
+            if (iceServerDescription["urls"].is_string()) {
+                iceServer.urls = { iceServerDescription["urls"].get<std::string>() };
+            } else if (iceServerDescription["urls"].is_array()) {
+                iceServer.urls = iceServerDescription["urls"].get<std::vector<std::string>>();
+            } else {
+                continue;
+            }
+            
+            if (iceServerDescription.contains("username")) {
+                iceServer.username = iceServerDescription["username"].get<std::string>();
+            }
+            if (iceServerDescription.contains("credential")) {
+                iceServer.password = iceServerDescription["credential"].get<std::string>();
+            }
+            
+            //DK TLS Insecure begin
+            auto setInsecure = [&](bool insecure){
+                iceServer.tls_cert_policy = insecure
+                ? webrtc::PeerConnectionInterface::TlsCertPolicy::kTlsCertPolicyInsecureNoCheck
+                : webrtc::PeerConnectionInterface::TlsCertPolicy::kTlsCertPolicySecure;
+            };
+            
+            if (iceServerDescription.contains("tlsCertPolicy")) {
+                const auto& v = iceServerDescription["tlsCertPolicy"];
+                if (v.is_number_integer()) {
+                    setInsecure(v.get<int>() == 1);
+                } else if (v.is_string()) {
+                    std::string s = v.get<std::string>();
+                    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+                    // akceptujeme víc variant
+                    setInsecure(s == "insecurenocheck" || s == "insecure_no_check" || s == "insecure");
+                }
+            } else if (iceServerDescription.contains("tls_cert_policy")) {
+                // snake_case alias
+                const auto& v = iceServerDescription["tls_cert_policy"];
+                if (v.is_number_integer()) setInsecure(v.get<int>() == 1);
+            }
+            //DK TLS Insecure end
+            
+            pcOptions.config.servers.push_back(iceServer);
+        }
 	}
 	return pcOptions;
 }
