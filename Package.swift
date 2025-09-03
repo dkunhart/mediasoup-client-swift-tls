@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+ // swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
@@ -17,13 +17,13 @@ let package = Package(
     ],
     dependencies: [],
     targets: [
-        .binaryTarget(
+        .package(
             name: "Mediasoup",
-            url: "https://github.com/dkunhart/mediasoup-client-swift-tls/tree/master/bin/Mediasoup.xcframework"
+            path: "./build/Mediasoup.xcframework"
         ),
-        .binaryTarget(
+        .package(
             name: "WebRTC",
-            url: "https://github.com/dkunhart/mediasoup-client-swift-tls/tree/master/bin/WebRTC.xcframework"
+            path: "./build/WebRTC.xcframework"
         )
     ]
 )
