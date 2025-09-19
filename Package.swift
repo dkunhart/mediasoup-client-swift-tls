@@ -19,11 +19,11 @@ let package = Package(
     targets: [
         .package(
             name: "Mediasoup",
-            path: "./build/Mediasoup.xcframework"
+            path: "./bin/Mediasoup.xcframework"
         ),
         .package(
             name: "WebRTC",
-            path: "./build/WebRTC.xcframework"
+            path: "./bin/WebRTC.xcframework"
         )
     ]
 )
