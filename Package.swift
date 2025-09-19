@@ -17,11 +17,11 @@ let package = Package(
     ],
     dependencies: [],
     targets: [
-        .package(
+        .binaryTarget(
             name: "Mediasoup",
             path: "./bin/Mediasoup.xcframework"
         ),
-        .package(
+        .binaryTarget(
             name: "WebRTC",
             path: "./bin/WebRTC.xcframework"
         )
